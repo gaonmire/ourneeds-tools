@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>글자 수 세기 - 실시간 문자 수 계산기</title>
+  <meta name="description" content="실시간 글자 수 세기 도구! 공백 포함/제외 글자 수와 단어 수를 한눈에 확인해보세요. 반복되는 단어도 확인 가능!">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+    .result-box {
+      background: #f4f4f4;
+      padding: 15px;
+      border-radius: 8px;
+      line-height: 1.6;
+    }
+    .repeat-words {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: #333;
+    }
+    .adsense-box {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #fafafa;
+      border: 1px dashed #ccc;
+      border-radius: 6px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📄 글자 수 세기</h2>
+
+  <!-- ✅ 광고 자리: 입력창 위 -->
+  <div class="adsense-box">
+    <!-- 여기에 광고 코드 삽입 예정 -->
+    <p style="text-align:center; color: #aaa; font-size: 0.85rem;">[ 광고 자리 ]</p>
+  </div>
+
+  <textarea id="textInput" placeholder="여기에 텍스트를 입력하세요..."></textarea>
+
+  <div class="result-box">
+    <p><strong>공백 제외 글자 수:</strong> <span id="charCount">0</span>자</p>
+    <p><strong>공백 포함 글자 수:</strong> <span id="charCountWithSpace">0</span>자</p>
+    <p><strong>단어 수:</strong> <span id="wordCount">0</span>개</p>
+    <div class="repeat-words">
+      <strong>반복 단어:</strong>
+      <p id="repeatWords">없음</p>
+    </div>
+  </div>
+
+  <!-- ✅ 광고 자리: 결과 아래 -->
+  <div class="adsense-box">
+    <!-- 여기에 광고 코드 삽입 예정 -->
+    <p style="text-align:center; color: #aaa; font-size: 0.85rem;">[ 광고 자리 ]</p>
+  </div>
+
+  <script>
+    const textInput = document.getElementById('textInput');
+    const charCount = document.getElementById('charCount');
+    const charCountWithSpace = document.getElementById('charCountWithSpace');
+    const wordCount = document.getElementById('wordCount');
+    const repeatWords = document.getElementById('repeatWords');
+
+    textInput.addEventListener('input', () => {
+      const text = textInput.value;
+
+      // 공백 포함/제외 글자 수
+      charCountWithSpace.textContent = text.length;
+      charCount.textContent = text.replace(/\s/g, '').length;
+
+      // 단어 수 계산
+      const words = text.trim().split(/\s+/).filter(w => w !== '');
+      wordCount.textContent = words.length;
+
+      // 단어 등장 횟수 계산
+      const wordMap = {};
+      for (const word of words) {
+        const clean = word.replace(/[^ㄱ-ㅎ가-힣a-zA-Z0-9]/g, '').toLowerCase();
+        if (!clean || clean.length < 1) continue;
+        wordMap[clean] = (wordMap[clean] || 0) + 1;
+      }
+
+      // 반복 단어 목록 만들기
+      const sorted = Object.entries(wordMap)
+        .filter(([word, count]) => count > 1)
+        .sort((a, b) => b[1] - a[1]);
+
+      repeatWords.innerHTML = sorted.length
+        ? sorted.map(([w, c]) => `${w} (${c})`).join(', ')
+        : '없음';
+    });
+  </script>
+</body>
+</html>

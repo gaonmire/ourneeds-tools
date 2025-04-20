@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR 코드 생성기</title>
+  <meta name="description" content="링크나 텍스트를 입력하면 실시간으로 QR 코드를 만들어주는 무료 QR 생성기입니다. 명함, 포스터, 블로그에 활용해보세요.">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: #f0f0f0;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    button:hover {
+      background: #e0e0e0;
+    }
+    #qrcode {
+      margin-top: 20px;
+    }
+    .sub-label {
+      font-size: 0.95rem;
+      margin: 25px 0 10px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📌 QR 코드 생성기</h2>
+  <p>링크나 텍스트를 입력하면 QR 코드가 생성됩니다!</p>
+
+  <input type="text" id="qrInput" placeholder="예: https://naver.com" />
+  <button onclick="generateQR()">🎯 생성하기</button>
+
+  <p class="sub-label">🎨 QR 코드 색상을 나만의 색으로 지정하고 싶다면?
+</p>
+  <input type="text" id="colorInput" placeholder="전경 색상코드 (예: #000000)" />
+  <input type="text" id="bgInput" placeholder="배경 색상코드 (예: #ffffff)" />
+  <button onclick="generateColoredQR()">🎨 색상 입혀서 생성하기</button>
+
+  <div id="qrcode"></div>
+  <button id="downloadBtn" onclick="downloadQR()" style="display: none;">📥 QR 코드 다운로드</button>
+
+  <hr style="margin: 40px 0 20px;">
+  <div style="text-align: left; font-size: 0.95rem; color: #444;">
+    <h3 style="cursor: pointer;" onclick="toggleQRExamples()">
+      🎨 QR 코드 색상 예시 보기 <span id="qrToggleText">▼</span>
+    </h3>
+
+    <div id="qrExampleBox" style="display: none; margin-top: 10px;">
+      <div style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+
+        <div style="flex: 1 1 30%; text-align: center;">
+          <p style="font-weight: bold;">1️⃣ 전경색만 변경</p>
+          <img src="A_digital_vector_graphic_displays_a_QR_code_in_lav.png" 
+               alt="전경색만 변경" 
+               style="width: 100%; max-width: 160px; height: auto;">
+        </div>
+
+        <div style="flex: 1 1 30%; text-align: center;">
+          <p style="font-weight: bold;">2️⃣ 배경색만 변경</p>
+          <img src="A_QR_code_is_presented_in_the_center_of_a_digital_.png" 
+               alt="배경색만 변경" 
+               style="width: 100%; max-width: 160px; height: auto;">
+        </div>
+
+        <div style="flex: 1 1 30%; text-align: center;">
+          <p style="font-weight: bold;">3️⃣ 전경+배경 변경</p>
+          <img src="A_QR_code_with_a_pastel_lavender-colored_backgroun.png" 
+               alt="전경+배경 변경" 
+               style="width: 100%; max-width: 160px; height: auto;">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function generateQR() {
+      const input = document.getElementById('qrInput').value.trim();
+      const qrcodeBox = document.getElementById('qrcode');
+      qrcodeBox.innerHTML = '';
+
+      if (!input) {
+        alert('텍스트나 링크를 입력해주세요!');
+        return;
+      }
+
+      QRCode.toCanvas(input, { width: 200 }, function (err, canvas) {
+        if (err) {
+          alert('QR 코드 생성에 실패했어요.');
+          return;
+        }
+        qrcodeBox.appendChild(canvas);
+        document.getElementById('downloadBtn').style.display = 'inline-block';
+      });
+    }
+
+    function generateColoredQR() {
+      const input = document.getElementById('qrInput').value.trim();
+      const color = document.getElementById('colorInput').value || '#000000';
+      const bgColor = document.getElementById('bgInput').value || '#ffffff';
+      const qrcodeBox = document.getElementById('qrcode');
+      qrcodeBox.innerHTML = '';
+
+      if (!input) {
+        alert('텍스트나 링크를 입력해주세요!');
+        return;
+      }
+
+      QRCode.toCanvas(input, {
+        width: 200,
+        color: {
+          dark: color,
+          light: bgColor
+        }
+      }, function (err, canvas) {
+        if (err) {
+          alert('QR 코드 생성에 실패했어요.');
+          return;
+        }
+        qrcodeBox.appendChild(canvas);
+        document.getElementById('downloadBtn').style.display = 'inline-block';
+      });
+    }
+
+    function downloadQR() {
+      const canvas = document.querySelector('#qrcode canvas');
+      if (!canvas) {
+        alert('먼저 QR 코드를 생성해주세요!');
+        return;
+      }
+      const link = document.createElement('a');
+      link.download = 'qr-code.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+
+    function toggleQRExamples() {
+      const box = document.getElementById('qrExampleBox');
+      const toggleText = document.getElementById('qrToggleText');
+      const isVisible = box.style.display === 'block';
+      box.style.display = isVisible ? 'none' : 'block';
+      toggleText.textContent = isVisible ? '▼' : '▲';
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>색상 찾기 - 이 색깔 색상코드 알고 싶어요!</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      text-align: center;
+    }
+    input[type="file"] {
+      margin-bottom: 15px;
+    }
+    canvas {
+      max-width: 100%;
+      border: 1px solid #ddd;
+      margin-top: 10px;
+    }
+    #canvasWrapper {
+      position: relative;
+      display: inline-block;
+    }
+    #colorBoxWrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 15px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    #colorBox {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .color-preview {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+    }
+    .code-text {
+      font-size: 1.1rem;
+      cursor: pointer;
+      user-select: all;
+    }
+    .copy-guide {
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .click-guide-button {
+      font-size: 0.9rem;
+      color: #666;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+      cursor: pointer;
+      font-weight: 500;
+      display: none; /* 기본적으로 숨김 */
+    }
+    .drop-zone {
+      border: 2px dashed #bbb;
+      border-radius: 10px;
+      padding: 20px;
+      color: #999;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>🌟 이 색깔 무엇이어요?</h2>
+  <p>이미지를 업로드하고 버튼을 눌러 색상을 확인해보세요 🎨</p>
+
+  <div class="drop-zone" id="dropZone">
+    파일을 선택하거나 이곳에 이미지를 드래그 해보세요!
+    <input type="file" id="imageUpload" accept="image/*" style="display: none;" />
+  </div>
+
+  <br />
+  <div id="colorBoxWrapper">
+    <div id="canvasWrapper">
+      <canvas id="canvas"></canvas>
+      <button class="click-guide-button" id="clickGuide">색상 코드 추출하기</button>
+    </div>
+    <div id="colorBox" style="display: none;">
+      <div class="color-preview" id="colorPreview"></div>
+      <div class="code-text" id="colorCode">#000000</div>
+      <div class="copy-guide">코드를 클릭하면 복사돼요!</div>
+    </div>
+  </div>
+
+  <script>
+    const imageUpload = document.getElementById("imageUpload");
+    const dropZone = document.getElementById("dropZone");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const colorBox = document.getElementById("colorBox");
+    const colorPreview = document.getElementById("colorPreview");
+    const colorCode = document.getElementById("colorCode");
+    const clickGuide = document.getElementById("clickGuide");
+
+    dropZone.addEventListener("click", () => imageUpload.click());
+
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = "#888";
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.style.borderColor = "#bbb";
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = "#bbb";
+      imageUpload.files = e.dataTransfer.files;
+      handleImageUpload(imageUpload.files[0]);
+    });
+
+    imageUpload.addEventListener("change", function (e) {
+      handleImageUpload(e.target.files[0]);
+    });
+
+    function handleImageUpload(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const img = new Image();
+        img.onload = function () {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          clickGuide.style.display = "block";
+          colorBox.style.display = "none";
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    clickGuide.addEventListener("click", () => {
+      const x = Math.floor(canvas.width / 2);
+      const y = Math.floor(canvas.height / 2);
+      const pixel = ctx.getImageData(x, y, 1, 1).data;
+      const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+      colorPreview.style.background = hex;
+      colorCode.textContent = hex;
+      colorBox.style.display = "flex";
+      clickGuide.style.display = "none";
+    });
+
+    colorCode.addEventListener("click", () => {
+      navigator.clipboard.writeText(colorCode.textContent);
+      colorCode.textContent = colorCode.textContent + " (복사됨!)";
+      setTimeout(() => {
+        colorCode.textContent = colorCode.textContent.replace(" (복사됨!)", "");
+      }, 1000);
+    });
+
+    function rgbToHex(r, g, b) {
+      return (
+        "#" +
+        [r, g, b]
+          .map((x) => x.toString(16).padStart(2, "0"))
+          .join("")
+          .toUpperCase()
+      );
+    }
+  </script>
+</body>
+</html>

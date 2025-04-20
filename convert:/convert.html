@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>단위 변환기 - cm/inch, kg/lb, ml/oz 외</title>
+  <meta name="description" content="cm↔inch, kg↔lb, ml↔oz, 섭씨↔화씨 등 단위 변환을 빠르게 계산하세요. 요리, 쇼핑, 여행에 필요한 필수 도구!">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .button-group button {
+      flex: 1 1 calc(50% - 10px);
+      padding: 10px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: #f8f8f8;
+      border-radius: 5px;
+    }
+    .button-group button:hover {
+      background: #e0e0e0;
+    }
+    .result-box {
+      background: #f4f4f4;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🧮 단위 변환기</h2>
+
+  <input type="number" id="valueInput" placeholder="변환할 값을 입력하세요">
+
+  <div class="button-group">
+    <button onclick="convert('cmToInch')">cm → inch</button>
+    <button onclick="convert('inchToCm')">inch → cm</button>
+    <button onclick="convert('kgToLb')">kg → lb</button>
+    <button onclick="convert('lbToKg')">lb → kg</button>
+    <button onclick="convert('mlToOz')">ml → oz</button>
+    <button onclick="convert('ozToMl')">oz → ml</button>
+    <button onclick="convert('gToOz')">g → oz</button>
+    <button onclick="convert('ozToG')">oz → g</button>
+    <button onclick="convert('cToF')">°C → °F</button>
+    <button onclick="convert('fToC')">°F → °C</button>
+    <button onclick="convert('pyToM2')">평 → m²</button>
+    <button onclick="convert('m2ToPy')">m² → 평</button>
+  </div>
+
+  <div class="result-box" id="resultBox">변환 결과가 여기에 표시됩니다.</div>
+
+  <script>
+    function convert(type) {
+      const value = parseFloat(document.getElementById('valueInput').value);
+      const resultBox = document.getElementById('resultBox');
+
+      if (isNaN(value)) {
+        resultBox.textContent = '숫자를 입력해주세요.';
+        return;
+      }
+
+      let result = '';
+      switch (type) {
+        case 'cmToInch':
+          result = `${value}cm = ${(value * 0.393701).toFixed(2)} inch`;
+          break;
+        case 'inchToCm':
+          result = `${value}inch = ${(value * 2.54).toFixed(2)} cm`;
+          break;
+        case 'kgToLb':
+          result = `${value}kg = ${(value * 2.20462).toFixed(2)} lb`;
+          break;
+        case 'lbToKg':
+          result = `${value}lb = ${(value * 0.453592).toFixed(2)} kg`;
+          break;
+        case 'mlToOz':
+          result = `${value}ml = ${(value * 0.033814).toFixed(2)} oz`;
+          break;
+        case 'ozToMl':
+          result = `${value}oz = ${(value * 29.5735).toFixed(2)} ml`;
+          break;
+        case 'gToOz':
+          result = `${value}g = ${(value * 0.035274).toFixed(2)} oz`;
+          break;
+        case 'ozToG':
+          result = `${value}oz = ${(value * 28.3495).toFixed(2)} g`;
+          break;
+        case 'cToF':
+          result = `${value}°C = ${((value * 9/5) + 32).toFixed(2)}°F`;
+          break;
+        case 'fToC':
+          result = `${value}°F = ${((value - 32) * 5/9).toFixed(2)}°C`;
+          break;
+        case 'pyToM2':
+          result = `${value}평 = ${(value * 3.3058).toFixed(2)} m²`;
+          break;
+        case 'm2ToPy':
+          result = `${value}m² = ${(value / 3.3058).toFixed(2)} 평`;
+          break;
+      }
+
+      resultBox.textContent = result;
+    }
+  </script>
+
+</body>
+</html>
+
+<hr style="margin: 40px 0 20px;">
+
+<div style="font-size: 0.92rem; color: #555; line-height: 1.7;">
+  <h3 style="font-size: 1.05rem;">📌 단위 변환기란?</h3>
+  <p>
+    다양한 단위를 빠르게 변환할 수 있는 간편한 페이지입니다.<br>
+    <strong>cm↔inch, kg↔lb, ml↔oz, °C↔°F, 평↔제곱미터</strong> 등 자주 사용하는 단위를 클릭 한 번으로 변환하세요.
+  </p>
+
+  <h4 style="margin-top: 20px;">🔍 이런 분들께 추천드려요</h4>
+  <ul style="padding-left: 20px;">
+    <li>📦 해외 직구나 아마존 쇼핑을 자주 하는 분</li>
+    <li>🍳 요리할 때 g, ml, oz 단위 헷갈리시는 분</li>
+    <li>🌡️ 섭씨/화씨 변환이 필요한 유학생, 여행자</li>
+    <li>🏠 우리집은 몇 평이지? 인테리어나 부동산 면적 계산이 필요한 분</li>
+  </ul>
+
+  <h4 style="margin-top: 20px; cursor: pointer;" onclick="toggleKeywordBox()">
+    🔗 인기 검색어 예시 <span id="toggleText">▼</span>
+  </h4>
+  <div id="keywordBox" style="display: none; margin-top: 10px;">
+    <p>
+      "1인치 = 몇 cm", "100ml는 몇 온스", "섭씨를 화씨로 바꾸기",<br>
+      "10평은 몇 m²", "500g oz 변환" 등 실생활 단위 계산을 한 번에!
+    </p>
+  </div>
+  
+  <script>
+    function toggleKeywordBox() {
+      const box = document.getElementById('keywordBox');
+      const toggleText = document.getElementById('toggleText');
+      const isOpen = box.style.display === 'block';
+      box.style.display = isOpen ? 'none' : 'block';
+      toggleText.textContent = isOpen ? '▼' : '▲';
+    }
+  </script>
+  

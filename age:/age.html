@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>나이 계산기</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 500px; margin: auto; }
+    input, button { font-size: 1rem; padding: 10px; margin-top: 10px; }
+    .result { margin-top: 20px; background: #f2f2f2; padding: 15px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+
+  <h2>🎂 나이 계산기</h2>
+
+  <h3>출생연도로 계산하기</h3>
+  <input type="number" id="birthYear" placeholder="예: 1999">
+  <button onclick="calcByYear()">계산하기</button>
+
+  <h3>생년월일로 계산하기</h3>
+  <input type="date" id="birthdate">
+  <button onclick="calculateAge()">계산하기</button>
+
+  <div class="result" id="resultBox" style="display:none;"></div>
+
+  <script>
+    function calcByYear() {
+      const birthYear = parseInt(document.getElementById('birthYear').value);
+      const today = new Date();
+      const thisYear = today.getFullYear();
+      if (!birthYear || birthYear > thisYear) {
+        alert("올바른 출생 연도를 입력해주세요.");
+        return;
+      }
+      const westernAge = thisYear - birthYear;
+      const koreanAge = thisYear - birthYear + 1;
+
+      document.getElementById('resultBox').style.display = 'block';
+      document.getElementById('resultBox').innerHTML = `
+        <p><strong>출생연도 기준 계산 결과</strong></p>
+        <p>만나이: 계산 불가</p>
+        <p>세는 나이: ${koreanAge}세</p>
+        <p>미국식 나이: ${westernAge}세</p>
+      `;
+    }
+
+    function calculateAge() {
+      const input = document.getElementById('birthdate').value;
+      if (!input) return alert("생년월일을 입력해주세요!");
+
+      const birth = new Date(input);
+      const today = new Date();
+
+      const yearDiff = today.getFullYear() - birth.getFullYear();
+      const thisYearBirthday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+      const isBirthdayPassed = today >= thisYearBirthday;
+
+      const manAge = isBirthdayPassed ? yearDiff : yearDiff - 1;
+      const koreanAge = today.getFullYear() - birth.getFullYear() + 1;
+      const westernAge = yearDiff;
+
+      document.getElementById('resultBox').style.display = 'block';
+      document.getElementById('resultBox').innerHTML = `
+        <p><strong>생년월일 기준 계산 결과</strong></p>
+        <p><strong>만나이:</strong> ${manAge}세</p>
+        <p><strong>세는나이:</strong> ${koreanAge}세</p>
+        <p><strong>미국식 나이:</strong> ${westernAge}세</p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
+<!-- 설명글 -->
+<hr style="margin-top: 40px; margin-bottom: 20px;">
+
+<div id="age-info" style="font-size: 0.95rem; color: #444; line-height: 1.6;">
+  <h3 style="font-size: 1.1rem;">📝 나이 계산기란?</h3>
+  <p>
+    생년월일 또는 출생연도를 입력하면 <strong>만나이, 세는 나이, 미국식 나이</strong>를 <br>한 번에 확인할 수 있는 간단한 계산기입니다.<br>
+  나이 기준이 헷갈릴 때 빠르게 비교해보세요.
+  </p>
+
+  <h4 style="margin-top: 25px;">📌 만나이란?</h4>
+  <p>
+    <strong>태어난 날짜를 기준으로</strong> 계산한 실제 나이입니다.  
+    생일이 지나지 않았다면 한 살 적게 계산됩니다.  
+    대한민국은 <strong>2023년 6월부터 만나이 기준으로 통일</strong>했어요.
+  </p>
+
+  <h4 style="margin-top: 25px;">📌 세는 나이란?</h4>
+  <p>
+    <strong>한국 전통 방식의 </strong>나이 계산입니다.  
+    태어날 때 1살부터 시작하고, 해가 바뀔 때마다 1살을 더합니다.  
+    공식적으로는 쓰지 않지만 일상에서 종종 사용되곤 해요.
+  </p>
+
+  <h4 style="margin-top: 25px;">📌 미국식 나이란?</h4>
+  <p>
+    단순히 <code>현재 연도 - 출생 연도</code>로 계산하는 방식입니다.  
+    생일을 고려하지 않기 때문에, 만나이와 1살 차이 날 수 있어요.
+  </p>
+</div>
+
+</body>
+</html>

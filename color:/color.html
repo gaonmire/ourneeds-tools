@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한국인이 사랑하는 색상 코드</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 30px;
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+    }
+    h2 {
+      text-align: center;
+      font-size: 2rem;
+    }
+    .palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .color-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: #f8f8f8;
+      border: 1px solid #eee;
+      transition: background 0.3s;
+    }
+    .color-box:hover {
+      background: #efefef;
+    }
+    .circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+    }
+    .code {
+      font-size: 0.95rem;
+      font-family: monospace;
+    }
+    .copied {
+      color: green;
+      font-size: 0.85rem;
+      margin-left: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h2>🎨 한국인이 사랑하는 색상 코드</h2>
+  <div class="palette" id="palette"></div>
+
+  <script>
+    const colors = [
+      '#FFF5F0','#FFE4E1','#FFB6B9','#FF7C7C','#FF5733',
+      '#FFE8B2','#FFD700','#FDB813','#FDCB6E','#F0A500',
+      '#F6FDC3','#D2FBA4','#B2E672','#94D82D','#55EF82',
+      '#D6FFF6','#A0F0ED','#7AE3E1','#00C2CB','#00B894',
+      '#E8EDFF','#B4C5FF','#94B0FF','#6488EA','#5352ED',
+      '#E2D4FF','#C6B1E9','#9C88FF','#7F6ADF','#6C5CE7',
+      '#E6E6E6','#CACACA','#A4A4A4','#737373','#4D4D4D',
+      '#FFFFFF','#FAFAFA','#F5F5F5','#000000','#1E1E1E',
+      '#F97F51','#E84393','#D63031','#C44569','#6F1E51',
+      '#00CEC9','#0984E3','#2C3A47','#2D3436','#3C40C6'
+    ];
+
+    const palette = document.getElementById('palette');
+
+    colors.forEach(code => {
+      const box = document.createElement('div');
+      box.className = 'color-box';
+
+      const circle = document.createElement('div');
+      circle.className = 'circle';
+      circle.style.background = code;
+
+      const label = document.createElement('span');
+      label.className = 'code';
+      label.innerText = code;
+
+      const copied = document.createElement('span');
+      copied.className = 'copied';
+      copied.innerText = '';
+
+      box.appendChild(circle);
+      box.appendChild(label);
+      box.appendChild(copied);
+
+      box.onclick = () => {
+        navigator.clipboard.writeText(code);
+        copied.innerText = '복사됨!';
+        setTimeout(() => copied.innerText = '', 1500);
+      };
+
+      palette.appendChild(box);
+    });
+  </script>
+</body>
+</html>
+
+<!-- 색상 코드 리스트 끝나는 부분 아래에 삽입 -->
+<h3 style="margin: 50px 0 20px; text-align: center;">💟 나만의 색상 코드 조합하기</h3>
+
+
+
+<div id="paletteInputs" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 30px;">
+    <input type="text" placeholder="#색상코드" class="palette-input" />
+    <input type="text" placeholder="#색상코드" class="palette-input" />
+  </div>
+  
+  <!-- 버튼 -->
+  <div style="margin-top: 10px; text-align: center;">
+    <button id="addPaletteBtn">🌸 팔레트 추가하기</button>
+    <button onclick="mixColors()">➕ 조합하기</button>
+  </div>
+  
+  <!-- 결과 -->
+  <div id="mixPreview" style="margin-top: 20px;"></div>
+  <p id="mixResult" style="text-align: center; font-weight: bold;"></p>
+  
+  <script>
+    // 🎨 팔레트 input 추가
+    function addPaletteInput() {
+      const wrapper = document.createElement("div");
+      wrapper.className = "input-wrapper";
+  
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "#색상코드";
+      input.className = "palette-input";
+  
+      wrapper.appendChild(input);
+      document.getElementById("paletteInputs").appendChild(wrapper);
+      input.focus(); // UX: 자동 포커스
+    }
+  
+    // 🎯 버튼에 이벤트 연결
+    document.getElementById("addPaletteBtn").addEventListener("click", addPaletteInput);
+  
+    // 🧪 색상 조합 기능
+    function mixColors() {
+      const inputs = document.querySelectorAll(".palette-input");
+      const colors = Array.from(inputs).map(input => input.value.trim()).filter(c => /^#[0-9A-Fa-f]{6}$/.test(c));
+      if (colors.length === 0) return;
+  
+      // 평균값 계산
+      let r = 0, g = 0, b = 0;
+      colors.forEach(hex => {
+        r += parseInt(hex.substring(1, 3), 16);
+        g += parseInt(hex.substring(3, 5), 16);
+        b += parseInt(hex.substring(5, 7), 16);
+      });
+  
+      r = Math.round(r / colors.length);
+      g = Math.round(g / colors.length);
+      b = Math.round(b / colors.length);
+  
+      const mixedHex = "#" + [r, g, b].map(x => x.toString(16).padStart(2, "0")).join("").toUpperCase();
+  
+      // 시각적으로 조합 UI 생성
+      const previewHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+          ${colors.map(c => `<div style="width: 40px; height: 40px; border-radius: 50%; background: ${c}; border: 1px solid #ccc;"></div>`).join('<span style="font-size:1.5rem;">+</span>')}
+          <span style="font-size:1.5rem;">=</span>
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: ${mixedHex}; border: 2px solid #000;"></div>
+        </div>
+      `;
+  
+      document.getElementById("mixPreview").innerHTML = previewHTML;
+      document.getElementById("mixResult").innerText = `조합 결과 색상 코드: ${mixedHex}`;
+    }
+  </script>
+  

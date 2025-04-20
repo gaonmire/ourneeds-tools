@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>랜덤 이름 추첨기</title>
+  <meta name="description" content="여러 명의 이름 중에서 원하는 인원 수만큼 무작위로 추첨하는 랜덤 뽑기 도구입니다. 모임, 학급, 팀 활동에 유용해요.">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input, textarea, button {
+      font-size: 1rem;
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      cursor: pointer;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button:hover {
+      background: #e0e0e0;
+    }
+    .result {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #d40000; /* 필요 시 강조 색 */
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎯 랜덤 이름 뽑기</h2>
+
+  <label for="countInput">✅ 몇 명을 뽑을까요?</label>
+  <input type="number" id="countInput" placeholder="예: 3" min="1" />
+
+  
+  <label for="nameInput" style="display: block; margin-top: 25px; margin-bottom: 8px;">
+    📝 이름을 입력해주세요 (쉼표 또는 줄바꿈 가능)
+  </label>
+  
+  <textarea id="nameInput" placeholder="지원, 유라, 민호, 지훈 또는 줄바꿈으로 입력해도 됩니다."></textarea>
+
+  <button onclick="drawRandom()">🎲 뽑기</button>
+
+  <div class="result" id="resultBox"></div>
+
+  <script>
+    function drawRandom() {
+      const rawInput = document.getElementById('nameInput').value.trim();
+      const count = parseInt(document.getElementById('countInput').value);
+      const resultBox = document.getElementById('resultBox');
+
+      // 이름 분리 (쉼표 또는 줄바꿈)
+      const names = rawInput
+        .split(/[\n,]+/)
+        .map(n => n.trim())
+        .filter(n => n !== '');
+
+      const uniqueNames = [...new Set(names)]; // 중복 제거
+
+      if (!count || isNaN(count) || count <= 0) {
+        resultBox.textContent = '❗ 뽑을 인원 수를 정확히 입력해주세요!';
+        return;
+      }
+
+      if (uniqueNames.length < count) {
+        resultBox.textContent = `❗ ${count}명을 뽑기엔 입력한 이름이 부족해요! (${uniqueNames.length}명 입력됨)`;
+        return;
+      }
+
+      // Fisher-Yates Shuffle
+      for (let i = uniqueNames.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [uniqueNames[i], uniqueNames[j]] = [uniqueNames[j], uniqueNames[i]];
+      }
+
+      const winners = uniqueNames.slice(0, count);
+      resultBox.innerHTML = `🎉 <strong>당첨자 (${count}명):</strong> ${winners.join(', ')}`;
+    }
+  </script>
+
+</body>
+</html>
